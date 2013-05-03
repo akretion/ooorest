@@ -1,5 +1,5 @@
 Ooorest::Engine.routes.draw do
-  controller "ooorest" do
+  controller "rest" do
     Ooorest::Config::Actions.all(:root).each { |action| match "/#{action.route_fragment}", :to => action.action_name, :as => action.action_name, :via => action.http_methods }
     scope ":model_name" do
       Ooorest::Config::Actions.all(:collection).each { |action| match "/#{action.route_fragment}", :to => action.action_name, :as => action.action_name, :via => action.http_methods }

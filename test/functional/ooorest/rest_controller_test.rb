@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module Ooorest
-  class OoorestControllerTest < ActionController::TestCase
+  class RestControllerTest < ActionController::TestCase
     # test "the truth" do
     #   assert true
     # end
