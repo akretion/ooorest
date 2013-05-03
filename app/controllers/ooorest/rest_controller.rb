@@ -4,7 +4,6 @@ require_dependency "ooorest/action_window_controller"
 module Ooorest
   class RestController < ApplicationController
     include Ooorest::ActionWindowController
-     #TODO include helpers
 #    layout :get_layout
     layout 'application'
 

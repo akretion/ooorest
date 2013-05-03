@@ -1,6 +1,11 @@
 require 'active_support/concern'
 
 module Ooorest
+
+#  def self.get_partial(abstract_model, model_path, view, view_type, fields)
+#    "Not implemented in OOOREST, see AktOOOR instead"
+#  end
+
   module ActionWindowController
 
   module Caching
@@ -49,11 +54,12 @@ module Ooorest
     include Caching
 
     def get_model
+      @model_path = params[:model_name]
       @model_name = to_model_name(params[:model_name])
       raise Ooorest::ModelNotFound unless (@abstract_model = Ooor::Ooor.default_ooor.const_get(@oe_model_name))
 #      raise RailsAdmin::ModelNotFound if (@model_config = @abstract_model.config).excluded?
 #      @properties = @abstract_model.properties
-      @view_type = {index: :tree, edit: :form}[params["action"].to_sym] || 'tree'
+      @view_type = {index: :tree, edit: :form, new: :form}[params["action"].to_sym] || :tree
       fvg = cache("fgv/#{@model_name}/#{@view_type}") do #TODO OE user cache wise? 
         @abstract_model.rpc_execute('fields_view_get', false, @view_type) #TODO accept specific view id/name/xml_id
       end
@@ -61,13 +67,14 @@ module Ooorest
       %w[model_name _method controller action format _].each {|k| @context.delete(k)}
       @view = fvg['arch']
       @fields = fvg['fields']
+      @oe_partial = Ooorest.get_partial(@abstract_model, @model_path, @view, @view_type, @fields) #TODO horrible
     end
 
     def get_object
 #      if params[:id].index(",")
 #        @ids = params[:id].gsub('[', '').gsub(']', '').split(',').map {|i| i.to_i}
 #      end
-      raise Ooorest::ObjectNotFound unless (@object = @abstract_model.find(params[:id], fields: @fields.keys(), context: @contexti)) #TODO support multiple ids
+      raise Ooorest::ObjectNotFound unless (@object = @abstract_model.find(params[:id], fields: @fields.keys(), context: @context)) #TODO support multiple ids
     end
 
     def to_model_name(param)
