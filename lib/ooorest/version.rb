@@ -1,3 +1,3 @@
 module Ooorest
-  VERSION = "0.0.1"
+  VERSION = "1.9.9"
 end
