@@ -56,7 +56,7 @@ module Ooorest
     def get_model
       @model_path = params[:model_name]
       @model_name = to_model_name(params[:model_name])
-      raise Ooorest::ModelNotFound unless (@abstract_model = Ooor::Ooor.default_ooor.const_get(@oe_model_name))
+      raise Ooorest::ModelNotFound unless (@abstract_model = Ooor.connection(params).const_get(@oe_model_name))
 #      raise RailsAdmin::ModelNotFound if (@model_config = @abstract_model.config).excluded?
 #      @properties = @abstract_model.properties
       @view_type = {index: :tree, edit: :form, new: :form}[params["action"].to_sym] || :tree
@@ -78,8 +78,8 @@ module Ooorest
     end
 
     def to_model_name(param)
-      @oe_model_name = param.gsub('_', '.')
-      Ooor::OpenObjectResource.class_name_from_model_key(@oe_model_name)
+      @oe_model_name = param.gsub('-', '.')
+      Ooor::Base.class_name_from_model_key(@oe_model_name)
     end
 
     def params
