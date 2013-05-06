@@ -67,6 +67,7 @@ module Ooorest
       %w[model_name _method controller action format _].each {|k| @context.delete(k)}
       @view = fvg['arch']
       @fields = fvg['fields']
+      @abstract_model.set_columns_hash(@fields)
       @oe_partial = Ooorest.get_partial(@abstract_model, @model_path, @view, @view_type, @fields) #TODO horrible
     end
 
@@ -222,6 +223,24 @@ module Ooorest
     def on_change(args=nil)
     @local_params = args
       render :json => "TODO", :layout => false
+    end
+
+    private
+      
+    def _authenticate!
+      instance_eval &Ooorest.authenticate_with
+    end
+
+    def _authorize!
+      instance_eval &Ooorest.authorize_with
+    end
+
+    def _audit!
+      instance_eval &Ooorest.audit_with
+    end
+
+    def _current_user
+      instance_eval &Ooorest.current_user_method
     end
 
   end

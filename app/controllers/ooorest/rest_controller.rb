@@ -8,5 +8,8 @@ module Ooorest
 
     before_filter :get_model, :except => [:dashboard]
     before_filter :get_object, :only => [:show, :edit, :delete,:show_in_app]
+
+    before_filter :_authenticate!
+    before_filter :_authorize!
   end
 end
