@@ -1,5 +1,6 @@
-require 'ooorest/engine'
 require 'active_support'
+require 'ooorest/engine'
+require 'ooorest/action_window_controller'
 
 module Ooorest
 
@@ -31,6 +32,7 @@ module Ooorest
         end
         @authorize || DEFAULT_AUTHORIZE
       end 
+
     end
   end
 
