@@ -6,13 +6,17 @@ require 'ooor/base'
 require "action_controller"
 
 module Ooorest
+  class ModelNotFound < ::StandardError
+  end
+
+  class ObjectNotFound < ::StandardError
+  end
+
   module ActionWindowController
-    extend AbstractController::Callbacks
 
     # GET /res_partners
     # GET /res_partners.json
-    def index(args=nil)
-      @local_params = args
+    def index(*args)
       @domain = eval((params.delete(:domain) || "[]").gsub("(","[").gsub(")","]"))
       @offset = params.delete(:offset) || false
       @limit = params.delete(:limit) || false
@@ -31,8 +35,7 @@ module Ooorest
 
     # GET /res_partners/1
     # GET /res_partners/1.json
-    def show(args=nil)
-      @local_params = args
+    def show(*args)
       respond_to do |format|
         format.html # show.html.erb
         format.xml { render xml: @object }
@@ -42,10 +45,8 @@ module Ooorest
 
     # GET /res_partners/new
     # GET /res_partners/new.json
-    def new(args=nil)
-      @local_params = args
+    def new(*args)
       @object = @abstract_model.new
-
       respond_to do |format|
         format.html # new.html.erb
         format.json { render json: @object }
@@ -53,8 +54,7 @@ module Ooorest
     end
 
     # GET /res_partners/1/edit
-    def edit(args=nil)
-      @local_params = args
+    def edit(*args)
       respond_to do |format|
         format.html # edit.html.erb        
       end
@@ -62,11 +62,11 @@ module Ooorest
 
     # POST /res_partners
     # POST /res_partners.json
-    def create(args=nil)
-      @local_params = args
+    def create(*args)
       respond_to do |format|
+        @object = @abstract_model.new(params[@model_path.gsub('-', '_')])
         if @object.save
-          format.html { redirect_to @object, notice: 'Res partner was successfully created.' }
+          format.html { redirect_to ooorest.index_path, notice: 'Res partner was successfully created.' }
           format.json { render json: @object, status: :created, location: @res_partner }
         else
           format.html { render action: "new" }
@@ -77,11 +77,10 @@ module Ooorest
 
     # PUT /res_partners/1
     # PUT /res_partners/1.json
-    def update(args=nil)
-      @local_params = args
+    def update(*args)
       respond_to do |format|
-        if @object.update_attributes(params[:res_partner])
-          format.html { redirect_to @object, notice: 'Res partner was successfully updated.' }
+        if @object.update_attributes(params[@model_path.gsub('-', '_')])
+          format.html { redirect_to ooorest.index_path, notice: 'Res partner was successfully updated.' }
           format.json { head :no_content }
         else
           format.html { render action: "edit" }
@@ -90,15 +89,26 @@ module Ooorest
       end
     end
 
+    # DELETE /posts/1
+    # DELETE /posts/1.json
+    def destroy
+      @object = @abstract_model.find(params[:id])
+      @object.destroy
+
+      respond_to do |format|
+        format.html { redirect_to ooorest.index_path }
+        format.json { head :no_content }
+      end
+    end
+
+
 #TODO TODO TODO FIXME FIXME FIXME
-  def search(args=nil)
-    @local_params = args
+  def search(*args)
     @domain = eval((params.delete(:domain) || "[]").gsub("(","[").gsub(")","]"))
     @offset = params.delete(:offset) || false
     @limit = params.delete(:limit) || false
     @order = params.delete(:order) || false
     @count = params.delete(:count) || false
-    @context = context_from_params(params)
     @ids = model_class.search(@domain, @offset, @limit, @order, @context, @count)
 
     respond_to do |format|
@@ -108,9 +118,7 @@ module Ooorest
     end
   end
 
-  def call(args=nil)
-    @local_params = args
-    @context = context_from_params(params)
+  def call(*args)
     method =  @context.delete(:method)
     arguments = eval("[" + @context.delete(:param_string) + "]")
     #@context.delete(:args)
@@ -131,18 +139,15 @@ module Ooorest
     end
   end
 
-    def copy(args=nil)
-    @local_params = args
+    def copy(*args)
       render :json => "TODO", :layout => false
     end
 
-    def wkf_action(args=nil)
-    @local_params = args
+    def wkf_action(*args)
       render :json => "TODO", :layout => false
     end
 
-    def on_change(args=nil)
-    @local_params = args
+    def on_change(*args)
       render :json => "TODO", :layout => false
     end
 
@@ -164,9 +169,7 @@ module Ooorest
       instance_eval &Ooorest.current_user_method
     end
 
-    def params
-      @local_params || super
-    end
+#    private
 
     def get_model_meta
       get_model
@@ -181,6 +184,8 @@ module Ooorest
       @model_path = params[:model_name]
       @model_name = to_model_name(params[:model_name])
       raise Ooorest::ModelNotFound unless (@abstract_model = Ooor.connection(params).const_get(@oe_model_name))
+      @context = params.dup()
+      %w[model_name _method controller action format _].each {|k| @context.delete(k)}
     end
 
     def get_object
@@ -188,6 +193,22 @@ module Ooorest
 #         @ids = params[:id].gsub('[', '').gsub(']', '').split(',').map {|i| i.to_i}
 #       end
       raise Ooorest::ObjectNotFound unless (@object = @abstract_model.find(params[:id], context: @context)) #TODO support multiple ids
+    end
+
+    def _authenticate!
+      instance_eval &Ooorest.authenticate_with
+    end
+
+    def _authorize!
+      instance_eval &Ooorest.authorize_with
+    end
+
+    def _audit!
+      instance_eval &Ooorest.audit_with
+    end
+
+    def _current_user
+      instance_eval &Ooorest.current_user_method
     end
 
   end
