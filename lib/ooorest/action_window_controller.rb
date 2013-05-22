@@ -177,7 +177,7 @@ module Ooorest
 
     def to_model_name(param)
       @oe_model_name = param.gsub('-', '.')
-      Ooor::Base.class_name_from_model_key(@oe_model_name)
+      @connection.class_name_from_model_key(@oe_model_name)
     end
 
     def context
@@ -188,9 +188,11 @@ module Ooorest
     end
 
     def get_model
+      session_config = params.slice(:ooor_config, :ooor_user_id, :ooor_username, :ooor_password, :ooor_database)
+      @connection = Ooor::Connection.retrieve_connection(session_config)
       @model_path = params[:model_name]
       @model_name = to_model_name(params[:model_name])
-      raise Ooorest::ModelNotFound unless (@abstract_model = Ooor.connection(params).const_get(@oe_model_name, context))
+      raise Ooorest::ModelNotFound unless (@abstract_model = @connection.const_get(@oe_model_name))
     end
 
     def get_object
