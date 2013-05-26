@@ -187,9 +187,19 @@ module Ooorest
       end
     end
 
+
+    def get_session_credentials
+      {ooor_user_id: 1, ooor_password: 'admin2', ooor_database: 'rails2'} #TODO deal with current_user
+    end
+
+    def get_connection
+      session_credentials = get_session_credentials
+      session_credentials.merge(params.slice(:ooor_user_id, :ooor_username, :ooor_password, :ooor_database)) #TODO dangerous?
+      Ooor::Connection.retrieve_connection(session_credentials)
+    end
+
     def get_model
-      session_config = params.slice(:ooor_config, :ooor_user_id, :ooor_username, :ooor_password, :ooor_database)
-      @connection = Ooor::Connection.retrieve_connection(session_config)
+      @connection ||= get_connection
       @model_path = params[:model_name]
       @model_name = to_model_name(params[:model_name])
       raise Ooorest::ModelNotFound unless (@abstract_model = @connection.const_get(@oe_model_name))
