@@ -23,8 +23,10 @@ module Ooorest
       @order = params.delete(:order) || false
       @count = params.delete(:count) || false
       @field_names = params.delete(:fields) || @fields.keys
-      #TODO find ids using pagination
-      @objects = @abstract_model.find(:all, :domain=>@domain, :fields=>@field_names, :context => context)#TODO plug on read?
+      @page = params[:page]
+      @per = params[:per]
+      @objects = @abstract_model.order(@order).page(@page).per(@per).apply_finder_options(:domain=>@domain, :fields=>@field_names, :context => context)
+#      @objects = @abstract_model.find(:all, :domain=>@domain, :fields=>@field_names, :context => context)#TODO plug on read?
 
       respond_to do |format|
         format.html # index.html.erb
@@ -186,7 +188,6 @@ module Ooorest
         %w[model_name id _method controller action format _].each {|k| c.delete(k)}
       end
     end
-
 
     def get_session_credentials
       {ooor_user_id: 1, ooor_password: 'admin2', ooor_database: 'rails2'} #TODO deal with current_user

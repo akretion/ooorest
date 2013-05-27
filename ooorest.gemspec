@@ -18,5 +18,5 @@ Gem::Specification.new do |s|
   s.add_dependency "actionpack", ">= 3.1"
   s.add_dependency "warden"
   s.add_dependency "ooor", ">= 1.9"
-#  s.add_dependency 'kaminari', '~> 0.14'
+  s.add_dependency 'kaminari'
 end
