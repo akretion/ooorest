@@ -22,16 +22,15 @@ module Ooorest
       @limit = params.delete(:limit) || false
       @order = params.delete(:order) || false
       @count = params.delete(:count) || false
-      @field_names = params.delete(:fields) || @fields.keys
+      @field_names = params.delete(:fields) || @fields && @fields.keys
       @page = params[:page]
       @per = params[:per]
       @objects = @abstract_model.order(@order).page(@page).per(@per).apply_finder_options(:domain=>@domain, :fields=>@field_names, :context => context)
-#      @objects = @abstract_model.find(:all, :domain=>@domain, :fields=>@field_names, :context => context)#TODO plug on read?
 
       respond_to do |format|
         format.html # index.html.erb
-        format.json  { render :json => @objects, :layout => false }
-        format.xml  { render :xml => @objects, :layout => false }
+        format.json  { render :json => @objects.to_a, :layout => false }
+        format.xml  { render :xml => @objects.to_a, :layout => false }
       end
     end
 
