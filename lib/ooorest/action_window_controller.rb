@@ -14,8 +14,6 @@ module Ooorest
   end
 
   module ActionWindowController
-    include RequestHelper
-
     # GET /res_partners
     # GET /res_partners.json
     def index(*args)

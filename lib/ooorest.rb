@@ -17,7 +17,6 @@ module Ooorest
 
   DEFAULT_OE_USER_METHOD = Proc.new do
     uid = 1
-    
   end
 
   module OoorestConfig
@@ -57,6 +56,8 @@ module Ooorest
       instance_eval &Ooorest.current_oe_user_method
     end
   end
+
+  ActionController::Base.send :include, RequestHelper
 
   ActionController::Base.send :include, CurrentOEUser #TODO do it the AbstractController helper way so it's available in views
 
