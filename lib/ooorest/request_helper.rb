@@ -26,7 +26,7 @@ module Ooorest
       else
         session_credentials = get_session_credentials
         session_credentials.merge(params.slice(:ooor_user_id, :ooor_username, :ooor_password, :ooor_database)) #TODO dangerous?
-        @connection = Ooor::Connection.retrieve_connection(session_credentials)
+        @connection = Ooor::Base.connection_handler.retrieve_connection(session_credentials)
       end
     end
 
