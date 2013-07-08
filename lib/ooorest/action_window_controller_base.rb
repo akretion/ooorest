@@ -12,5 +12,6 @@ module Ooorest
     before_filter :_authenticate!
     before_filter :_authorize!
 
+    helper_method :_current_user
   end
 end

@@ -24,7 +24,7 @@ module Ooorest
       @count = params.delete(:count) || false
       @field_names = params.delete(:fields) || @fields && @fields.keys
       @page = params[:page]
-      @per = params[:per]
+      @per = params[:per] || 50
       @objects = @abstract_model.order(@order).page(@page).per(@per).apply_finder_options(:domain=>@domain, :fields=>@field_names, :context => context)
 
       respond_to do |format|
@@ -168,6 +168,10 @@ module Ooorest
 
     def _current_user
       instance_eval &Ooorest.current_user_method
+    end
+
+    def _current_oe_credentials
+      instance_eval &Ooorest.current_oe_credentials
     end
 
   end

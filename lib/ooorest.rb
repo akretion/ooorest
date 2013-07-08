@@ -15,8 +15,12 @@ module Ooorest
 
   DEFAULT_AUTHORIZE = Proc.new {}
 
-  DEFAULT_OE_USER_METHOD = Proc.new do
-    uid = 1
+  DEFAULT_CURRENT_USER = Proc.new do
+    request.env["warden"].try(:user) || respond_to?(:current_user) && current_user
+  end
+
+  DEFAULT_OE_CREDENTIALS = Proc.new do #TODO
+    raise "_current_oe_credentials is not implemented here, your app config should provide this specific implementation!"
   end
 
   module OoorestConfig
@@ -40,9 +44,14 @@ module Ooorest
         @authorize || DEFAULT_AUTHORIZE
       end 
 
-      def current_oe_user_method(*args, &block)
-        @current_user_method = block if block
-        @current_user_method || DEFAULT_OE_USER_METHOD
+      def current_user_method(&block)
+        @current_user = block if block
+        @current_user || DEFAULT_CURRENT_USER
+      end
+
+      def current_oe_credentials(&block)
+        @oe_credentials = block if block
+        @oe_credentials || DEFAULT_OE_CREDENTIALS
       end
 
     end
@@ -50,17 +59,7 @@ module Ooorest
 
   include OoorestConfig
 
-
-  module CurrentOEUser
-    def current_oe_user
-      instance_eval &Ooorest.current_oe_user_method
-    end
-  end
-
   ActionController::Base.send :include, RequestHelper
-
-  ActionController::Base.send :include, CurrentOEUser #TODO do it the AbstractController helper way so it's available in views
-
 
   module Paginator
     def total_count(column_name = nil, options = {})

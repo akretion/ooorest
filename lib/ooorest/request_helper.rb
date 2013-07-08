@@ -16,15 +16,11 @@ module Ooorest
       end
     end
 
-    def get_session_credentials
-      {ooor_user_id: 1, ooor_password: 'admin2', ooor_database: 'rails2'} #TODO deal with current_user
-    end
-
     def connection
       if @connection
         @connection
       else
-        session_credentials = get_session_credentials
+        session_credentials = _current_oe_credentials
         session_credentials.merge(params.slice(:ooor_user_id, :ooor_username, :ooor_password, :ooor_database)) #TODO dangerous?
         @connection = Ooor::Base.connection_handler.retrieve_connection(session_credentials)
       end
