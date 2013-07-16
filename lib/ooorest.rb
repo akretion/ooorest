@@ -59,7 +59,7 @@ module Ooorest
 
   include OoorestConfig
 
-  ActionController::Base.send :include, RequestHelper
+  AbstractController::Base.send :include, RequestHelper
 
   module Paginator
     def total_count(column_name = nil, options = {})
