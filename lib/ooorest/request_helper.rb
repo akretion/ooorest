@@ -11,8 +11,11 @@ module Ooorest
 
     def context
       @context ||= params.dup().tap do |c|
+        c.delete(@model_path.gsub('-', '_')) #save/create record data not part of context
+        ctx = c.delete(:context)
+        c.merge(ctx) if ctx.is_a?(Hash)
         c[:active_id] = c[:id]
-        %w[model_name id _method controller action format _].each {|k| c.delete(k)}
+        %w[model_name id _method controller action format _ utf8 authenticity_token commit].each {|k| c.delete(k)}
       end
     end
 
