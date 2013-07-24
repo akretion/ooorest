@@ -170,9 +170,5 @@ module Ooorest
       instance_eval &Ooorest.current_user_method
     end
 
-    def _current_oe_credentials
-      instance_eval &Ooorest.current_oe_credentials
-    end
-
   end
 end
