@@ -59,12 +59,8 @@ module Ooorest
 
   include OoorestConfig
 
-  class AbstractController::Base
-    include RequestHelper
-    def _current_oe_credentials
-      instance_eval &Ooorest.current_oe_credentials
-    end
-  end
+  AbstractController::Base.send :include, RequestHelper
+  ActionController::Base.send :helper, RequestHelper
 
   module Paginator
     def total_count(column_name = nil, options = {})

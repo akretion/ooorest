@@ -19,6 +19,10 @@ module Ooorest
       end
     end
 
+    def _current_oe_credentials
+      instance_eval &Ooorest.current_oe_credentials
+    end
+
     def connection
       if @connection
         @connection
@@ -29,17 +33,18 @@ module Ooorest
       end
     end
 
-    def get_model
-      @model_path = params[:model_name]
-      @model_name = to_model_name(params[:model_name])
-      raise Ooorest::ModelNotFound unless (@abstract_model = connection.const_get(@oe_model_name))
+    def get_model(model_path=params[:model_name])
+      if @abstract_model
+        @abstract_model
+      else
+        @model_path = model_path
+        @model_name = to_model_name(model_path)
+        raise Ooorest::ModelNotFound unless (@abstract_model = connection.const_get(@oe_model_name))
+      end
     end
 
-    def get_object
-#       if params[:id].index(",")
-#         @ids = params[:id].gsub('[', '').gsub(']', '').split(',').map {|i| i.to_i}
-#       end
-      raise Ooorest::ObjectNotFound unless (@object = @abstract_model.find(params[:id], fields: @fields && @fields.keys, context: context)) #TODO support multiple ids
+    def get_object(model=get_model, id=params[:id], fields=@fields && @fields.keys, ctx=context)
+      raise Ooorest::ObjectNotFound unless (@object = model.find(id, fields: fields, context: ctx))
     end
   end
 end
