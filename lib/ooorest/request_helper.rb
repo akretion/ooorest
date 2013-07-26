@@ -4,7 +4,7 @@ module Ooorest
       ooor_model
     end
 
-    def to_model_name(param)
+    def ooor_model_name(param)
       @oe_model_name = param.gsub('-', '.')
       ooor_session.class_name_from_model_key(@oe_model_name)
     end
@@ -38,7 +38,7 @@ module Ooorest
         @abstract_model
       else
         @model_path = model_path
-        @model_name = to_model_name(model_path)
+        @model_name = ooor_model_name(model_path)
         raise Ooorest::ModelNotFound unless (@abstract_model = ooor_session.const_get(@oe_model_name))
       end
     end
