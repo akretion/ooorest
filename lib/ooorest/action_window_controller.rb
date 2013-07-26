@@ -25,7 +25,7 @@ module Ooorest
       @field_names = params.delete(:fields) || @fields && @fields.keys
       @page = params[:page]
       @per = params[:per] || 50
-      @objects = @abstract_model.order(@order).page(@page).per(@per).apply_finder_options(:domain=>@domain, :fields=>@field_names, :context => context)
+      @objects = @abstract_model.order(@order).page(@page).per(@per).apply_finder_options(:domain=>@domain, :fields=>@field_names, :context => ooor_context)
 
       respond_to do |format|
         format.html # index.html.erb
@@ -110,7 +110,7 @@ module Ooorest
     @limit = params.delete(:limit) || false
     @order = params.delete(:order) || false
     @count = params.delete(:count) || false
-    @ids = model_class.search(@domain, @offset, @limit, @order, context, @count)
+    @ids = model_class.search(@domain, @offset, @limit, @order, ooor_context, @count)
 
     respond_to do |format|
       format.html { render :xml => @ids, :layout => false }# index.html.erb
@@ -120,18 +120,18 @@ module Ooorest
   end
 
   def call(*args)
-    method = context.delete(:method)
-    arguments = eval("[" + context.delete(:param_string) + "]")
-    #context.delete(:args)
-    ids = ids_from_param(context.delete(:id))
-    context.keys.each do |key|
-      context[key] = context[key].to_i if context[key] == context[key].to_i.to_s
+    method = ooor_context.delete(:method)
+    arguments = eval("[" + ooor_context.delete(:param_string) + "]")
+    #ooor_context.delete(:args)
+    ids = ids_from_param(ooor_context.delete(:id))
+    ooor_context.keys.each do |key|
+      ooor_context[key] = ooor_context[key].to_i if ooor_context[key] == ooor_context[key].to_i.to_s
     end
     if ids
       ids = [ids.to_i] unless ids.is_a? Array
-      res = model_class.rpc_execute(method, ids, *arguments + [context])#, context)
+      res = model_class.rpc_execute(method, ids, *arguments + [ooor_context])#, context)
     else
-      res = model_class.rpc_execute(method, *arguments + [context]) #TODO
+      res = model_class.rpc_execute(method, *arguments + [ooor_context]) #TODO
     end
     respond_to do |format|
       format.html { render :xml => res, :layout => false }# show.html.erb

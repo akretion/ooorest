@@ -9,10 +9,10 @@ module Ooorest
       ooor_session.class_name_from_model_key(@oe_model_name)
     end
 
-    def context
-      @context ||= params.dup().tap do |c|
+    def ooor_context
+      @ooor_context ||= params.dup().tap do |c|
         c.delete(@model_path.gsub('-', '_')) #save/create record data not part of context
-        ctx = c.delete(:context)
+        ctx = c.delete(:ooor_context)
         c.merge(ctx) if ctx.is_a?(Hash)
         c[:active_id] = c[:id]
         %w[model_name id _method controller action format _ utf8 authenticity_token commit].each {|k| c.delete(k)}
@@ -43,7 +43,7 @@ module Ooorest
       end
     end
 
-    def ooor_object(model=ooor_model, id=params[:id], fields=@fields && @fields.keys, ctx=context)
+    def ooor_object(model=ooor_model, id=params[:id], fields=@fields && @fields.keys, ctx=ooor_context)
       raise Ooorest::ObjectNotFound unless (@object = model.find(id, fields: fields, context: ctx))
     end
   end

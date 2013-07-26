@@ -64,7 +64,7 @@ module Ooorest
 
   module Paginator
     def total_count(column_name = nil, options = {})
-      @klass.search_count(where_values, @context || {})
+      @klass.search_count(where_values, @ooor_context || {})
     end 
 
     def page(num)
