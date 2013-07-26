@@ -1,7 +1,7 @@
 module Ooorest
   module RequestHelper
     def get_model_meta
-      get_model
+      ooor_model
     end
 
     def to_model_name(param)
@@ -33,7 +33,7 @@ module Ooorest
       end
     end
 
-    def get_model(model_path=params[:model_name])
+    def ooor_model(model_path=params[:model_name])
       if @abstract_model
         @abstract_model
       else
@@ -43,7 +43,7 @@ module Ooorest
       end
     end
 
-    def get_object(model=get_model, id=params[:id], fields=@fields && @fields.keys, ctx=context)
+    def get_object(model=ooor_model, id=params[:id], fields=@fields && @fields.keys, ctx=context)
       raise Ooorest::ObjectNotFound unless (@object = model.find(id, fields: fields, context: ctx))
     end
   end
