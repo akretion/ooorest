@@ -1,6 +1,6 @@
 module Ooorest
   module RequestHelper
-    def get_model_meta
+    def ooor_model_meta
       ooor_model
     end
 
