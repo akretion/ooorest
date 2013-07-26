@@ -19,15 +19,15 @@ module Ooorest
       end
     end
 
-    def _current_oe_credentials
-      instance_eval &Ooorest.current_oe_credentials
+    def ooor_credentials
+      instance_eval &Ooorest.ooor_credentials
     end
 
     def ooor_session
       if @ooor_session
         @ooor_session
       else
-        session_credentials = _current_oe_credentials
+        session_credentials = ooor_credentials
         session_credentials.merge(params.slice(:ooor_user_id, :ooor_username, :ooor_password, :ooor_database)) #TODO dangerous?
         @ooor_session = Ooor::Base.connection_handler.retrieve_connection(session_credentials)
       end
