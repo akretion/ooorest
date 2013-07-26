@@ -6,7 +6,7 @@ module Ooorest
 
     def to_model_name(param)
       @oe_model_name = param.gsub('-', '.')
-      connection.class_name_from_model_key(@oe_model_name)
+      ooor_session.class_name_from_model_key(@oe_model_name)
     end
 
     def context
@@ -23,13 +23,13 @@ module Ooorest
       instance_eval &Ooorest.current_oe_credentials
     end
 
-    def connection
-      if @connection
-        @connection
+    def ooor_session
+      if @ooor_session
+        @ooor_session
       else
         session_credentials = _current_oe_credentials
         session_credentials.merge(params.slice(:ooor_user_id, :ooor_username, :ooor_password, :ooor_database)) #TODO dangerous?
-        @connection = Ooor::Base.connection_handler.retrieve_connection(session_credentials)
+        @ooor_session = Ooor::Base.connection_handler.retrieve_connection(session_credentials)
       end
     end
 
@@ -39,7 +39,7 @@ module Ooorest
       else
         @model_path = model_path
         @model_name = to_model_name(model_path)
-        raise Ooorest::ModelNotFound unless (@abstract_model = connection.const_get(@oe_model_name))
+        raise Ooorest::ModelNotFound unless (@abstract_model = ooor_session.const_get(@oe_model_name))
       end
     end
 
