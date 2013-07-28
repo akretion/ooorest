@@ -64,10 +64,11 @@ module Ooorest
     # POST /res_partners
     # POST /res_partners.json
     def create(*args)
+      redirect_url = params.delete(:ooor_redirect)
       respond_to do |format|
         @object = @abstract_model.new(params[@model_path.gsub('-', '_')])
         if @object.save
-          format.html { redirect_to ooorest.index_path, notice: 'Res partner was successfully created.' }
+          format.html { redirect_to redirect_url || ooorest.index_path, notice: "successfully creation" }
           format.json { render json: @object, status: :created, location: @res_partner }
         else
           format.html { render action: "new" }
@@ -79,9 +80,10 @@ module Ooorest
     # PUT /res_partners/1
     # PUT /res_partners/1.json
     def update(*args)
+      redirect_url = params.delete(:ooor_redirect)
       respond_to do |format|
         if @object.update_attributes(params[@model_path.gsub('-', '_')])
-          format.html { redirect_to ooorest.index_path, notice: 'Res partner was successfully updated.' }
+          format.html { redirect_to redirect_url || ooorest.index_path, notice: "successfully update" }
           format.json { head :no_content }
         else
           format.html { render action: "edit" }
