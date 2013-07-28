@@ -40,11 +40,13 @@ module Ooorest
         @model_path = model_path
         @model_name = ooor_model_name(model_path)
         raise Ooorest::ModelNotFound unless (@abstract_model = ooor_session.const_get(@oe_model_name))
+        @abstract_model
       end
     end
 
     def ooor_object(model=ooor_model, id=params[:id], fields=@fields && @fields.keys, ctx=ooor_context)
       raise Ooorest::ObjectNotFound unless (@object = model.find(id, fields: fields, context: ctx))
+      @object
     end
   end
 end
