@@ -34,7 +34,7 @@ module Ooorest
     end
 
     def ooor_model(model_path=params[:model_name])
-      if @abstract_model
+      if @abstract_model && @abstract_model.openerp_model == ooor_model_name(model_path)
         @abstract_model
       else
         @model_path = model_path
