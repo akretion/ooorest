@@ -33,15 +33,18 @@ module Ooorest
       end
     end
 
+    def ooor_public_model(model_path=params[:model_name])
+      @model_path = model_path
+      @model_name = ooor_model_name(model_path)
+      raise Ooorest::ModelNotFound unless (@abstract_model = Ooor::Base.connection_handler.retrieve_connection(Ooor.default_config).const_get(@model_name))
+      @abstract_model
+    end
+
     def ooor_model(model_path=params[:model_name])
-      if @abstract_model && @abstract_model.openerp_model == ooor_model_name(model_path)
-        @abstract_model
-      else
-        @model_path = model_path
-        @model_name = ooor_model_name(model_path)
-        raise Ooorest::ModelNotFound unless (@abstract_model = ooor_session.const_get(@oe_model_name))
-        @abstract_model
-      end
+      @model_path = model_path
+      @model_name = ooor_model_name(model_path)
+      raise Ooorest::ModelNotFound unless (@abstract_model = ooor_session.const_get(@oe_model_name))
+      @abstract_model
     end
 
     def ooor_object(model=ooor_model, id=params[:id], fields=@fields && @fields.keys, ctx=ooor_context)
