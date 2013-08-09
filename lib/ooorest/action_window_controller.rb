@@ -25,33 +25,21 @@ module Ooorest
       @field_names = params.delete(:fields) || @fields && @fields.keys
       @page = params[:page]
       @per = params[:per] || 50
-      @objects = @abstract_model.order(@order).page(@page).per(@per).apply_finder_options(:domain=>@domain, :fields=>@field_names, :context => ooor_context)
-
-      respond_to do |format|
-        format.html # index.html.erb
-        format.json  { render :json => @objects.to_a, :layout => false }
-        format.xml  { render :xml => @objects.to_a, :layout => false }
-      end
+      @objects = @abstract_model.order(@order).page(@page).per(@per).apply_finder_options(:domain=>@domain, :fields=>@field_names, :context => ooor_context).all
+      respond_with @objects
     end
 
     # GET /res_partners/1
     # GET /res_partners/1.json
     def show(*args)
-      respond_to do |format|
-        format.html # show.html.erb
-        format.xml { render xml: @object }
-        format.json { render json: @object }
-      end
+      respond_with @object
     end
 
     # GET /res_partners/new
     # GET /res_partners/new.json
     def new(*args)
       @object = @abstract_model.new
-      respond_to do |format|
-        format.html # new.html.erb
-        format.json { render json: @object }
-      end
+      respond_with @object
     end
 
     # GET /res_partners/1/edit
