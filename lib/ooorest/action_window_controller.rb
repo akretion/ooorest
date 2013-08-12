@@ -19,14 +19,22 @@ module Ooorest
     def index(*args)
       @domain = eval((params.delete(:domain) || "[]").gsub("(","[").gsub(")","]"))
       @offset = params.delete(:offset) || false
-      @limit = params.delete(:limit) || false
+      @limit = params[:limit].blank? ? 50 : params.delete(:limit).to_i
       @order = params.delete(:order) || false
       @count = params.delete(:count) || false
       @field_names = params.delete(:fields) || @fields && @fields.keys
       @page = params[:page]
       @per = params[:per] || 50
-      @objects = @abstract_model.order(@order).page(@page).per(@per).apply_finder_options(:domain=>@domain, :fields=>@field_names, :context => ooor_context).all
-      respond_with @objects
+      options = {:domain=>@domain, :fields=>@field_names, :context => ooor_context}
+      unless params[:q].blank?
+        options[:name_search] = params[:q]
+      end
+      @objects = @abstract_model.order(@order).page(@page).per(@per).limit(@limit).apply_finder_options(options)
+      respond_to do |format|
+        format.html
+        format.json { render :json => @objects.all, :layout => false }
+        format.xml { render :xml => @objects.all, :layout => false }
+      end
     end
 
     # GET /res_partners/1
