@@ -27,10 +27,17 @@ You may run
 ```
 rake routes
 ```
-to discover the basic REST routes. For instance you can get the list of OpenERP users with:
+to discover the basic REST routes.
+
+For instance you can get the list of OpenERP users with:
 ```
 GET /ooorest/res-users.json
 ```
+You can also read user with 1 with:
+```
+GET /ooorest/res-users/1.json
+``
+
 the OpenERP model name param should come after the engine scope ('ooorest' here). Note that '.' from OpenERP model names are replaced by '-' (res.users -> res-users).
 
 
