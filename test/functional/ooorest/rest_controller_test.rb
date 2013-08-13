@@ -8,6 +8,7 @@ module Ooorest
       assert_response :success
       assert_not_nil assigns(:objects)
       assert_equal assigns(:objects)[0].login, 'admin'
+      assert_equal JSON.parse(response.body)[0]['login'], 'admin'
     end
 
     test "should show" do
@@ -15,12 +16,14 @@ module Ooorest
       assert_response :success
       assert_not_nil assigns(:object)
       assert_equal assigns(:object).login, 'admin'
+      assert_equal JSON.parse(response.body)['login'], 'admin'
     end
 
     test "should new" do
       get :new, use_route: :ooorest, model_name: 'res-users', id: 1, format: :json
       assert_response :success
       assert_not_nil assigns(:object)
+      assert_equal JSON.parse(response.body)['lang'], 'en_US' #default value
     end
 
   end
