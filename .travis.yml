@@ -1,0 +1,31 @@
+language: python
+python:
+  - "2.7"
+virtualenv:
+  system_site_packages: true
+
+before_install:
+ - sudo apt-get install -qq graphviz
+
+services:
+  - postgresql
+
+before_script:
+    - psql -c "CREATE USER openerp WITH PASSWORD 'admin';" -U postgres
+    - psql -c 'create database ooor_test with owner openerp;' -U postgres
+    - cd openerp
+    - ./openerp-server --db_user=postgres --db_user=openerp --db_password=admin --db_host=localhost &
+    - cd ..
+    - bundle install
+
+install:
+    - ./test/install_nightly.sh
+
+script:
+    - rake
+
+rvm:
+  - 1.9.3
+notifications:
+  email:
+    - raphael.valyi@akretion.com

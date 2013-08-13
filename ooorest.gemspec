@@ -16,7 +16,10 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "actionpack", ">= 3.1"
+  s.add_dependency "railties",    ">= 3.1"
   s.add_dependency "warden"
   s.add_dependency "ooor", ">= 1.9"
   s.add_dependency 'kaminari'
+
+  s.add_development_dependency "tzinfo" # FIXME: why the hell do we need this for 3.1?
 end
