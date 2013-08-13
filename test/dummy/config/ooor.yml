@@ -1,0 +1,9 @@
+test:
+  url: http://localhost:8069/xmlrpc         #the OpenERP XML/RPC server
+  database: ooor_test               #the OpenERP database you want to connect to
+  username: demo
+  password: demo
+  models: ['res.partner', 'res.users']
+  global_context:
+    'lang': en_US
+  bootstrap: true
