@@ -36,7 +36,7 @@ GET /ooorest/res-users.json
 You can also read user with 1 with:
 ```
 GET /ooorest/res-users/1.json
-``
+```
 
 the OpenERP model name param should come after the engine scope ('ooorest' here). Note that '.' from OpenERP model names are replaced by '-' (res.users -> res-users).
 
