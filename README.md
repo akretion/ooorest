@@ -1,5 +1,3 @@
-Ooorest
-
 [![Build Status](https://travis-ci.org/akretion/ooorest.png?branch=master)](https://travis-ci.org/akretion/ooorest)
 
 Basic REST Usage
