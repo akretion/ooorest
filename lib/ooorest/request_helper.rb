@@ -27,9 +27,15 @@ module Ooorest
       if @ooor_session
         @ooor_session
       else
-        session_credentials = ooor_credentials
-        session_credentials.merge(params.slice(:ooor_user_id, :ooor_username, :ooor_password, :ooor_database)) #TODO dangerous?
-        @ooor_session = Ooor::Base.connection_handler.retrieve_connection(session_credentials)
+        if env['warden'].authenticated?
+          session_credentials = ooor_credentials
+          session_credentials.merge(params.slice(:ooor_user_id, :ooor_username, :ooor_password, :ooor_database)) #TODO dangerous?
+          @ooor_session = Ooor::Base.connection_handler.retrieve_connection(session_credentials)
+        elsif Ooor.default_config
+          @ooor_session = Ooor::Base.connection_handler.retrieve_connection(Ooor.default_config)
+        else
+          raise "Access Error: User isn't authenticated in Warden and no public Ooor.default_config found either"
+        end
       end
     end
 
