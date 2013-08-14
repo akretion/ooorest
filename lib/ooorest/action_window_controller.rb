@@ -17,12 +17,12 @@ module Ooorest
     # GET /res_partners
     # GET /res_partners.json
     def index(*args)
-      @domain = eval((params.delete(:domain) || "[]").gsub("(","[").gsub(")","]"))
+      @domain = eval((params.delete(:domain) || "[]").gsub("(","[").gsub(")","]")) #FIXME remove that eval!
       @offset = params.delete(:offset) || false
       @limit = params[:limit].blank? ? 50 : params.delete(:limit).to_i
       @order = params.delete(:order) || false
       @count = params.delete(:count) || false
-      @field_names = params.delete(:fields) || @fields && @fields.keys
+      @field_names = parse_field_names
       @page = params[:page]
       @per = params[:per] || 50
       options = {:domain=>@domain, :fields=>@field_names, :context => ooor_context}
@@ -164,6 +164,19 @@ module Ooorest
 
     def _current_user
       instance_eval &Ooorest.current_user_method
+    end
+
+    def parse_field_names
+      if @fields
+        @fields.keys
+      elsif !params[:fields].blank?
+        fields = params.delete(:fields)
+        if fields.is_a? String
+          fields.split(",")
+        elsif fields.is_a? Array
+          fields
+        end
+      end
     end
 
   end
