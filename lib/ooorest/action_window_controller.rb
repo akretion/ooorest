@@ -164,24 +164,30 @@ module Ooorest
       @per = params[:per] || 50
     end
 
-    def parse_domain(json_domain)
-      if json_domain.blank?
-        false
-      else
-        domain = JSON.parse(json_domain.gsub("(","[").gsub(")","]"))
-        if domain.is_a?(Array) && !domain.last.is_a?(Array)
-          [domain]
+    def parse_domain(domain)
+      if domain.is_a?(String)
+        if domain.blank?
+          return false
         else
-          domain
+          domain = JSON.parse(domain.gsub("(","[").gsub(")","]"))
         end
+      end
+      if domain.is_a?(Array) && !domain.last.is_a?(Array)
+        [domain]
+      else
+        domain
       end
     end
 
-    def extract_positional_args(json_args)
-      unless json_args.strip[0] == '['
-        json_args = "[#{json_args}]"
+    def extract_positional_args(args)
+      if args.is_a?(String)
+        unless json_args.strip[0] == '['
+          json_args = "[#{json_args}]"
+        end
+        JSON.parse(json_args)
+      else
+        args
       end
-      JSON.parse(json_args)
     end
 
     def parse_field_names
