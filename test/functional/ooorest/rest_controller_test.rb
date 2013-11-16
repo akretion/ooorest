@@ -11,6 +11,14 @@ module Ooorest
       assert_equal 'admin', JSON.parse(response.body)[0]['login']
     end
 
+    test "should filter on index" do
+      get :index, use_route: :ooorest, model_name: 'res-users', format: :json, domain: '["login", "=", "demo"]'
+      assert_response :success
+      assert_not_nil assigns(:objects)
+      assert_equal 'demo', assigns(:objects)[0].login
+      assert_equal 'demo', JSON.parse(response.body)[0]['login']
+    end
+
     test "should load only specified fields" do
       get :index, use_route: :ooorest, model_name: 'res-users', format: :json, fields: 'login,company_id'
       assert_response :success
@@ -31,6 +39,13 @@ module Ooorest
       assert_not_nil assigns(:object)
       assert_equal 'en_US', JSON.parse(response.body)['lang'] #default value
     end
+
+    test "should search" do
+      get :search, use_route: :ooorest, model_name: 'res-users', format: :json, domain: '["login", "=", "demo"]'
+      assert_response :success
+      assert_not_nil assigns(:ids)
+    end
+
 
   end
 end
