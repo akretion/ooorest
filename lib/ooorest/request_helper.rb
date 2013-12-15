@@ -29,7 +29,6 @@ module Ooorest
       else
         if env['warden'] && env['warden'].authenticated?
           session_credentials = ooor_credentials
-          session_credentials.merge(params.slice(:ooor_user_id, :ooor_username, :ooor_password, :ooor_database)) #TODO dangerous?
           @ooor_session = Ooor::Base.connection_handler.retrieve_connection(session_credentials)
         elsif Ooor.default_config
           @ooor_session = Ooor::Base.connection_handler.retrieve_connection(Ooor.default_config)
