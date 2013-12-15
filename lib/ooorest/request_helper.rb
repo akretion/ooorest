@@ -53,7 +53,7 @@ module Ooorest
     end
 
     def ooor_object(model=ooor_model, id=params[:id], fields=@fields && @fields.keys, ctx=ooor_context)
-      raise Ooorest::ObjectNotFound unless (@object = model.find(id, fields: fields, context: ctx))
+      raise Ooorest::ObjectNotFound unless (@object = model.find(id.to_i, fields: fields, context: ctx))
       @object
     end
   end
