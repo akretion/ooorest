@@ -29,19 +29,25 @@ module Ooorest
       else
         if env['warden'] && env['warden'].authenticated?
           session_credentials = ooor_credentials
-          @ooor_session = Ooor::Base.connection_handler.retrieve_connection(session_credentials)
-        elsif Ooor.default_config
-          @ooor_session = Ooor::Base.connection_handler.retrieve_connection(Ooor.default_config)
+          @ooor_session = Ooor::Base.connection_handler.retrieve_connection(session_credentials) #TODO
         else
-          raise "Access Error: User isn't authenticated in Warden and no public Ooor.default_config found either"
+          @ooor_session = ooor_public_session
         end
+      end
+    end
+
+    def ooor_public_session
+      if Ooor.default_config
+        @ooor_session = env['ooor']['ooor_public_session']
+      else
+        raise "Access Error: User isn't authenticated in Warden and no public Ooor.default_config found either"
       end
     end
 
     def ooor_public_model(model_path=params[:model_name])
       @model_path = model_path
       @model_name = ooor_model_name(model_path)
-      raise Ooorest::ModelNotFound unless (@abstract_model = Ooor::Base.connection_handler.retrieve_connection(Ooor.default_config).const_get(@model_name))
+      raise Ooorest::ModelNotFound unless (@abstract_model = ooor_session.const_get(@model_name))
       @abstract_model
     end
 
@@ -50,11 +56,15 @@ module Ooorest
       @model_name = ooor_model_name(model_path)
       raise Ooorest::ModelNotFound unless (@abstract_model = ooor_session.const_get(@oe_model_name))
       @abstract_model
+    rescue Ooor::UnAuthorizedError
+      render :status => :unauthorized, :text => "Unauthorized"
     end
 
     def ooor_object(model=ooor_model, id=params[:id], fields=@fields && @fields.keys, ctx=ooor_context)
       raise Ooorest::ObjectNotFound unless (@object = model.find(id.to_i, fields: fields, context: ctx))
       @object
+    rescue Ooor::UnAuthorizedError
+      render :status => :unauthorized, :text => "Unauthorized"
     end
   end
 end
