@@ -1,6 +1,4 @@
 require 'json'
-require 'active_support/concern'
-require 'active_support/dependencies/autoload'
 require 'ooor'
 require 'ooor/base'
 
