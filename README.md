@@ -25,7 +25,22 @@ You may run
 ```
 rake routes
 ```
-to discover the basic REST routes.
+to discover the basic REST routes. You may typically have:
+```
+Routes for Ooorest::Engine:
+  dashboard GET         /                                      ooorest/rest#dashboard
+      index GET         /:model_name(.:format)                 ooorest/rest#index
+        new GET         /:model_name/new(.:format)             ooorest/rest#new
+     create POST        /:model_name(.:format)                 ooorest/rest#create
+     export GET|POST    /:model_name/export(.:format)          ooorest/rest#export
+bulk_delete POST|DELETE /:model_name/bulk_delete(.:format)     ooorest/rest#bulk_delete
+bulk_action POST        /:model_name/bulk_action(.:format)     ooorest/rest#bulk_action
+       show GET         /:model_name/:id(.:format)             ooorest/rest#show
+       edit GET         /:model_name/:id/edit(.:format)        ooorest/rest#edit
+     update PUT         /:model_name/:id/update(.:format)      ooorest/rest#update
+    destroy DELETE      /:model_name/:id(.:format)             ooorest/rest#destroy
+show_in_app GET         /:model_name/:id/show_in_app(.:format) ooorest/rest#show_in_app
+```
 
 For instance you can get the list of OpenERP users with:
 ```
