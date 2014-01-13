@@ -29,7 +29,7 @@ module Ooorest
       else
         if env['warden'] && env['warden'].authenticated?
           session_credentials = ooor_credentials
-          @ooor_session = Ooor::Base.connection_handler.retrieve_connection(session_credentials) #TODO
+          @ooor_session = Ooor.session_handler.retrieve_session(session_credentials) #TODO
         else
           @ooor_session = ooor_public_session
         end
