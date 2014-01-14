@@ -1,3 +1,5 @@
+require 'ooor/errors'
+
 module Ooorest
   module RequestHelper
     def ooor_model_meta
@@ -19,35 +21,18 @@ module Ooorest
       end
     end
 
-    def ooor_credentials
-      instance_eval &Ooorest.ooor_credentials
-    end
-
     def ooor_session
-      if @ooor_session
-        @ooor_session
-      else
-        if env['warden'] && env['warden'].authenticated?
-          session_credentials = ooor_credentials
-          @ooor_session = Ooor.session_handler.retrieve_session(session_credentials) #TODO
-        else
-          @ooor_session = ooor_public_session
-        end
-      end
+      env['ooor']['ooor_session']
     end
 
     def ooor_public_session
-      if Ooor.default_config
-        @ooor_session = env['ooor']['ooor_public_session']
-      else
-        raise "Access Error: User isn't authenticated in Warden and no public Ooor.default_config found either"
-      end
+      Ooor.default_session
     end
 
     def ooor_public_model(model_path=params[:model_name])
       @model_path = model_path
       @model_name = ooor_model_name(model_path)
-      raise Ooorest::ModelNotFound unless (@abstract_model = ooor_session.const_get(@model_name))
+      raise Ooorest::ModelNotFound unless (@abstract_model = ooor_public_session.const_get(@model_name))
       @abstract_model
     end
 

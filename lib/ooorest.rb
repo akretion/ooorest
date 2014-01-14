@@ -19,10 +19,6 @@ module Ooorest
     request.env["warden"].try(:user) || respond_to?(:current_user) && current_user
   end
 
-  DEFAULT_OOOR_CREDENTIALS = Proc.new do #TODO
-    raise "ooor_credentials is not implemented here, your app config should provide this specific implementation!"
-  end
-
   module OoorestConfig
     extend ActiveSupport::Concern
     module ClassMethods
@@ -47,11 +43,6 @@ module Ooorest
       def current_user_method(&block)
         @current_user = block if block
         @current_user || DEFAULT_CURRENT_USER
-      end
-
-      def ooor_credentials(&block)
-        @ooor_credentials = block if block
-        @ooor_credentials || DEFAULT_OOOR_CREDENTIALS
       end
 
     end

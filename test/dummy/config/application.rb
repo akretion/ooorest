@@ -7,11 +7,6 @@ require "ooorest"
 
 module Dummy
   class Application < Rails::Application
-
-    ::Ooorest.ooor_credentials do
-      {ooor_user_id: 1, ooor_password: 'admin', ooor_database: 'ooor_test', url: 'http://localhost:8069/xmlrpc'}
-    end
-
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

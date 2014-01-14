@@ -2,11 +2,11 @@ require 'test_helper'
 
 module Ooorest
   module RequestHelper
-    def ooor_public_session_for_tests
-      Ooor.session_handler.retrieve_session(Ooor.default_config)
+    def ooor_session_for_tests
+      Ooor.default_session
     end
 
-    alias_method :ooor_public_session, :ooor_public_session_for_tests
+    alias_method :ooor_session, :ooor_session_for_tests
   end
 
 
