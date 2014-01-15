@@ -29,7 +29,7 @@ module Ooorest
       Ooor.default_session
     end
 
-    def ooor_public_model(model_path=params[:model_name])
+    def ooor_default_model(model_path=params[:model_name])
       @model_path = model_path
       @model_name = ooor_model_name(model_path)
       raise Ooorest::ModelNotFound unless (@abstract_model = ooor_public_session.const_get(@model_name))
