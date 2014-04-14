@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/akretion/ooorest.png?branch=master)](https://travis-ci.org/akretion/ooorest)
+[![Dependency Status](https://www.versioneye.com/ruby/ooorest/badge.png)](https://www.versioneye.com/ruby/ooorest)
 
 Basic REST Usage
 ----------------
