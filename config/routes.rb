@@ -9,7 +9,7 @@ Ooorest::Engine.routes.draw do
                           ["/bulk_delete", :bulk_delete, :bulk_delete, [:post, :delete]]]
     member_actions = [["/", :show, :show, [:get]],
                       ["/edit", :edit, :edit, [:get]],
-                      ["/update", :update, :update, [:put]],
+                      ["/update", :update, :update, [:patch]],
                       ["/", :destroy, :destroy, [:delete]],
                       ["/show_in_app", :show_in_app, :show_in_app, [:get]]]
 
