@@ -17,4 +17,5 @@ gem 'actionpack'
 
 group :development do
   gem 'rake'
+  gem 'better_errors'
 end
