@@ -65,11 +65,13 @@ module Ooorest
       end
     end
 
-    # PUT /res-partners/1
-    # PUT /res-partners/1.json
+    # PATCH/PUT /res-partners/1
+    # PATCH/PUT /res-partners/1.json
     def update(*args)
+      @object = ooor_model(@model_path.gsub('-', '.')).new({}, [], {}, true)
+      @object.id = params[:id].to_i
       respond_to do |format|
-        if @object.update_attributes(params[@model_path.gsub('-', '_')]) #NOTE may be use just write on id without find before?
+        if @object.update_attributes(params[@model_path.gsub('-', '_')])
           format.html { redirect_to ooorest.index_path, notice: "successfully update" }
           format.json { head :no_content }
         else
@@ -82,7 +84,8 @@ module Ooorest
     # DELETE /posts/1
     # DELETE /posts/1.json
     def destroy
-      @object = @abstract_model.find(params[:id])
+      @object = ooor_model(@model_path.gsub('-', '.')).new({}, [], {}, true)
+      @object.id = params[:id].to_i
       @object.destroy
 
       respond_to do |format|
