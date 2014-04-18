@@ -30,15 +30,15 @@ module Ooorest
     end
 
     def ooor_default_model(model_path=params[:model_name])
-      @model_path = model_path
-      @model_name = ooor_model_name(model_path)
+      @model_path ||= model_path
+      @model_name ||= ooor_model_name(model_path)
       raise Ooorest::ModelNotFound unless (@abstract_model = ooor_public_session.const_get(@model_name))
       @abstract_model
     end
 
     def ooor_model(model_path=params[:model_name])
-      @model_path = model_path
-      @model_name = ooor_model_name(model_path)
+      @model_path ||= model_path
+      @model_name ||= ooor_model_name(model_path)
       raise Ooorest::ModelNotFound unless (@abstract_model = ooor_session.const_get(@oe_model_name))
       @abstract_model
     rescue Ooor::UnAuthorizedError
