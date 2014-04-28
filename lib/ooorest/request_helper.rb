@@ -6,11 +6,6 @@ module Ooorest
       ooor_model
     end
 
-    def ooor_model_name(param)
-      @oe_model_name = param.gsub('-', '.')
-      ooor_session.class_name_from_model_key(@oe_model_name)
-    end
-
     def ooor_context
       @ooor_context ||= params.dup().tap do |c|
         c.delete(@model_path.gsub('-', '_')) #save/create record data not part of context
@@ -31,15 +26,17 @@ module Ooorest
 
     def ooor_default_model(model_path=params[:model_name])
       @model_path ||= model_path
-      @model_name ||= ooor_model_name(model_path)
+      @model_name ||= model_path.gsub('-', '.')
+      @model_key ||= model_path.gsub('-', '_')
       raise Ooorest::ModelNotFound unless (@abstract_model = ooor_public_session.const_get(@model_name))
       @abstract_model
     end
 
     def ooor_model(model_path=params[:model_name])
       @model_path ||= model_path
-      @model_name ||= ooor_model_name(model_path)
-      raise Ooorest::ModelNotFound unless (@abstract_model = ooor_session.const_get(@oe_model_name))
+      @model_name ||= model_path.gsub('-', '.')
+      @model_key ||= model_path.gsub('-', '_')
+      raise Ooorest::ModelNotFound unless (@abstract_model = ooor_session.const_get(@model_name))
       @abstract_model
     rescue Ooor::UnAuthorizedError
       render :status => :unauthorized, :text => "Unauthorized"
@@ -51,5 +48,6 @@ module Ooorest
     rescue Ooor::UnAuthorizedError
       render :status => :unauthorized, :text => "Unauthorized"
     end
+
   end
 end
