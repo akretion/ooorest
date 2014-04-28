@@ -8,7 +8,7 @@ module Ooorest
     respond_to :html, :json, :xml
 
     before_filter :ooor_model_meta, :except => [:dashboard]
-    before_filter :ooor_object, :only => [:show, :edit, :show_in_app]
+    before_filter :ooor_object, :only => [:show, :edit, :update, :show_in_app]
 
 #    before_filter :_authenticate!
     before_filter :_authorize!

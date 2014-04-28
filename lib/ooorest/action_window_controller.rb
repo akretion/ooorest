@@ -18,15 +18,15 @@ module Ooorest
     def index(*args)
       extract_search_params()
       @field_names = parse_field_names
-      options = {:domain=>@domain, :fields=>@field_names, :context => ooor_context}
+      options = {domain: @domain, fields: @field_names, context: ooor_context}
       unless params[:q].blank?
         options[:name_search] = params[:q]
       end
       @objects = @abstract_model.order(@order).page(@page).per(@per).limit(@limit).apply_finder_options(options)
       respond_to do |format|
         format.html
-        format.json { render :json => @objects.all, :layout => false }
-        format.xml { render :xml => @objects.all, :layout => false }
+        format.json { render json: @objects.all, layout: false }
+        format.xml { render xml: @objects.all, layout: false }
       end
     end
 
@@ -68,10 +68,11 @@ module Ooorest
     # PATCH/PUT /res-partners/1
     # PATCH/PUT /res-partners/1.json
     def update(*args)
-      @object = ooor_model(@model_path.gsub('-', '.')).new({}, [], {}, true)
-      @object.id = params[:id].to_i
+      # NOTE: we let the before_filer do a find here because we prefer paying this
+      # extra read request than writing unchanged fields to OpenERP (can trigger slow
+      # computations...)
       respond_to do |format|
-        if @object.update_attributes(params[@model_path.gsub('-', '_')])
+        if @object.update(params[@model_key], false)
           format.html { redirect_to ooorest.index_path, notice: "successfully update" }
           format.json { head :no_content }
         else
@@ -94,7 +95,7 @@ module Ooorest
       end
     end
 
-    def search(*args)
+    def search(*args) #TODO do with index with some special options to do a search instead of a read?
       extract_search_params()
       @ids = @abstract_model.search(@domain, @offset, @limit, @order, ooor_context, @count)
 
