@@ -84,11 +84,13 @@ To map a web user to an OpenERP user, Ooorest is quite agnostic and let you do r
 ```ruby
   ::Ooor::Rack.ooor_session_config_mapper do |env|
     # read Warden or devise to figure out what you can read about current user in the env variable
-    {username: 'some_user', password: 'some_password', database: some_database, url: some_url, connection_session: {lang: 'pt_BR'}}
+    {username: 'some_user', password: 'some_password', database: 'some_database', url: 'some_url', connection_session: {lang: 'pt_BR'}}
   end
 ```
 
-Yes this is putting somewhere the password of the OpenERP users in the Rails app. I advise you never do that with an admin user and you be careful about exploit that would consist in trying to read these passwords. A typical use case however is the concept of 'light user': several web portal users will map to the same OpenERP user.
+Note that you can see here the full power of Ooor/Ooorest which is multi-OpenERP instances out of the box.
+
+Yes this is putting somewhere the password of the OpenERP users in the Rails app in clear. I advise you never do that with an admin user and you be careful about exploits that would consist in trying to read these passwords. A typical use case however is the concept of 'light user': several web portal users will map to the same OpenERP user.
 TODO In this case Ooorest will forward to OpenERP the email of the current portal user in the OpenERP context so you could log it or eventually apply specific access rule. TODO
 In the future, this would be welcome to ensure Ooor could authenticate to the same OAuth2 provider as OpenERP instead to avoid such a thing. Contributions are welcome.
 
