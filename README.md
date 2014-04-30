@@ -70,7 +70,7 @@ In this case the mentionned classes will be bootstraped and you'll be able to us
 Mapping web users to OpenERP users
 ==================================
 
-If instead you want to enable users to write in your OpenERP, you should instead use an authentication system such as Devise (anything base on Warden) and then use the ooor_object method from RequestHelper, for instance:
+If instead you want to enable users to write in your OpenERP, you should use an authentication system such as Devise (or anything base on Warden) and then use the ooor_object method from RequestHelper, for instance:
 ```ruby
 ooor_object('product.product')
 ```
@@ -83,7 +83,7 @@ To map a web user to an OpenERP user, Ooorest is quite agnostic and let you do r
 
 ```ruby
   ::Ooor::Rack.ooor_session_config_mapper do |env|
-    # read Warden or devise to figure out what you can read about current user in the env variable
+    # read Warden or Devise documentation to figure out what you can read about current user in the env variable
     {username: 'some_user', password: 'some_password', database: 'some_database', url: 'some_url', connection_session: {lang: 'pt_BR'}}
   end
 ```
