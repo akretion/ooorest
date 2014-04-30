@@ -38,7 +38,7 @@ bulk_delete POST|DELETE /:model_name/bulk_delete(.:format)     ooorest/rest#bulk
 bulk_action POST        /:model_name/bulk_action(.:format)     ooorest/rest#bulk_action
        show GET         /:model_name/:id(.:format)             ooorest/rest#show
        edit GET         /:model_name/:id/edit(.:format)        ooorest/rest#edit
-     update PUT         /:model_name/:id/update(.:format)      ooorest/rest#update
+     update PATCH       /:model_name/:id/update(.:format)      ooorest/rest#update
     destroy DELETE      /:model_name/:id(.:format)             ooorest/rest#destroy
 show_in_app GET         /:model_name/:id/show_in_app(.:format) ooorest/rest#show_in_app
 ```
