@@ -173,6 +173,10 @@ module Ooorest
         else
           domain = JSON.parse(domain.gsub("(","[").gsub(")","]"))
         end
+      elsif domain.is_a?(Hash) && domain.keys.first == "0" # weird way JQuery+rails pass nested arrays
+        d = []
+        domain.each {|k, v| d << v}
+        domain = d
       end
       if domain.is_a?(Array) && !domain.last.is_a?(Array)
         [domain]
