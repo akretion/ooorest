@@ -178,8 +178,22 @@ module Ooorest
         domain.each {|k, v| d << v}
         domain = d
       end
-      if domain.is_a?(Array) && !domain.last.is_a?(Array)
-        [domain]
+      if domain.is_a?(Array)
+        if !domain.last.is_a?(Array)
+          domain = [domain]
+        end
+
+        domain.map do |item|
+          if item.is_a?(Array) && item[2]
+            if item[2] =~ /\A[-+]?[0-9]+\z/
+              [item[0], item[1], Integer(item[2])]
+            else
+              item
+            end
+          else
+            item
+          end
+        end
       else
         domain
       end
