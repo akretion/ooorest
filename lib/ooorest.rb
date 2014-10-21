@@ -51,7 +51,18 @@ module Ooorest
   include OoorestConfig
 
   AbstractController::Base.send :include, RequestHelper
-  ActionController::Base.send :helper, RequestHelper
+
+  class ActionController::Base
+    helper RequestHelper
+    def current_user
+      user = super
+      class << user
+        include Ooorest::User
+      end
+      user.set_env(env)
+      user
+    end
+  end
 
   module Paginator
     def total_count(column_name = nil, options = {})

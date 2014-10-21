@@ -48,6 +48,42 @@ module Ooorest
     rescue Ooor::UnAuthorizedError
       render :status => :unauthorized, :text => "Unauthorized"
     end
+  end
 
+
+  module User
+    include RequestHelper
+    def set_env(env)
+      @env = env
+    end
+
+    def ooor_session
+      @env['ooor']['ooor_session']
+    end
+
+    def partner_id
+      child_candidate = ooor_model('res.partner').search([['email', '=', email], ['parent_id', '!=', false]])[0]
+      child_candidate || legal_partner_id
+    end
+
+    def partner
+      ooor_model('res.partner').find(partner_id)
+    end
+
+    def legal_partner_id
+      ooor_model('res.partner').search(['&', '|', ['email', '=', email], ['is_company', '=', true], ['parent_id', '=', false]])[0]
+    end
+
+    def legal_partner
+      ooor_model('res.partner').find(legal_partner_id)
+    end
+
+    def user_id
+      ooor_model('res.users').search(['email', '=', email])[0]
+    end
+
+    def user
+      ooor_model('res.users').find(user_id)
+    end
   end
 end
