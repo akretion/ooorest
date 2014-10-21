@@ -71,7 +71,7 @@ module Ooorest
     end
 
     def legal_partner_id
-      ooor_model('res.partner').search(['&', '|', ['email', '=', email], ['is_company', '=', true], ['parent_id', '=', false]])[0]
+      ooor_model('res.partner').search(['&', ['email', '=', email], '|', ['is_company', '=', true], ['parent_id', '=', false]])[0]
     end
 
     def legal_partner
