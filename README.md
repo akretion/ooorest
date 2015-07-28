@@ -20,7 +20,7 @@ Finally mount in your Rails application as an engine, for instance by adding thi
 mount Ooorest::Engine => "/ooorest"
 ```
 
-You can now talk to OpenERP using REST webservices in JSON or XML formats!
+You can now talk to Odoo using REST webservices in JSON or XML formats!
 
 You may run
 ```
@@ -43,7 +43,7 @@ bulk_action POST        /:model_name/bulk_action(.:format)     ooorest/rest#bulk
 show_in_app GET         /:model_name/:id/show_in_app(.:format) ooorest/rest#show_in_app
 ```
 
-For instance you can get the list of OpenERP users with:
+For instance you can get the list of Odoo users with:
 ```
 GET /ooorest/res-users.json
 ```
@@ -52,34 +52,43 @@ You can also read user with 1 with:
 GET /ooorest/res-users/1.json
 ```
 
-the OpenERP model name param should come after the engine scope ('ooorest' here). Note that '.' from OpenERP model names are replaced by '-' (res.users -> res-users).
+the Odoo model name param should come after the engine scope ('ooorest' here). Note that '.' from Odoo model names are replaced by '-' (res.users -> res-users).
 
 
 Usage as a Rails framework
 --------------------------
 
-You may also just require ooorest but not necessarily mount the engine. You may simply enjoy using the RequestHelper class that makes it easy to write your own custom Rails controllers to deal with OpenERP objects seamlessly.
+You may also just require ooorest but not necessarily mount the engine. You may simply enjoy using the RequestHelper class that makes it easy to write your own custom Rails controllers to deal with Odoo objects seamlessly.
 
-Global OpenERP authentication (same OpenERP credentials)
+
+Forcing authentication for Ooorest actions
+==========================================
+
+If you mount the Ooorest engine, you probably want to ensure that only authenticated users can hit Ooorest actions and hence Odoo. To force this, in config/ooor.yml, you need to add
+```yaml
+  authenticate_ooorest: true
+```
+
+Global Odoo authentication (same Odoo credentials)
 ========================================================
 
 You can choose to bootstrap a default default OOOR connection in your whole Rails app by setting an appropriate config/ooor.yml config file (see in test/dummy/config/ooor.yml for an example).
-In this case the mentionned classes will be bootstraped and you'll be able to use them in your Rails application. These classes will use the credentials defined in ooor.yml. Warning! this can be a security issue! So make sure that the default credentials you use here only have basic acess rights, possibly no write permissions at all in your OpenERP (specially if you mount the engine and hence enable default CRUD actions).
+In this case the mentionned classes will be bootstraped and you'll be able to use them in your Rails application. These classes will use the credentials defined in ooor.yml. Warning! this can be a security issue! So make sure that the default credentials you use here only have basic acess rights, possibly no write permissions at all in your Odoo (specially if you mount the engine and hence enable default CRUD actions).
 
 
-Mapping web users to OpenERP users
+Mapping web users to Odoo users
 ==================================
 
-If instead you want to enable users to write in your OpenERP, you should use an authentication system such as Devise (or anything base on Warden) and then use the ooor_object method from RequestHelper, for instance:
+If instead you want to enable users to write in your Odoo, you should use an authentication system such as Devise (or anything base on Warden) and then use the ooor_object method from RequestHelper, for instance:
 ```ruby
 ooor_object('product.product')
 ```
-wich will appropriately instanciate OpenERP proxies with appropriate specific OpenERP credentials according to the Rails logged user.
+wich will appropriately instanciate Odoo proxies with appropriate specific Odoo credentials according to the Rails logged user.
 
 
-But for this to work, the ooor rack middleware (ooor/lib/ooor/rack.rb) needs to do its job of mapping the currently authenticated user to some OpenERP user. Note that to use ooor_object method, Ooorest will force you to be authentitacted. Non authenticated users cannot have specific credentials, right? So non authenticated users can use the public_ooor_object method instead to get the proxy to the global OpenERP credentials if any instead.
+But for this to work, the ooor rack middleware (ooor/lib/ooor/rack.rb) needs to do its job of mapping the currently authenticated user to some Odoo user. Note that to use ooor_object method, Ooorest will force you to be authentitacted. Non authenticated users cannot have specific credentials, right? So non authenticated users can use the public_ooor_object method instead to get the proxy to the global Odoo credentials if any instead.
 
-To map a web user to an OpenERP user, Ooorest is quite agnostic and let you do really what you want. All you have to do is provide such a block of code in your Rails config/application.rb file for instance:
+To map a web user to an Odoo user, Ooorest is quite agnostic and let you do really what you want. All you have to do is provide such a block of code in your Rails config/application.rb file for instance:
 
 ```ruby
   ::Ooor::Rack.ooor_session_config_mapper do |env|
@@ -88,9 +97,12 @@ To map a web user to an OpenERP user, Ooorest is quite agnostic and let you do r
   end
 ```
 
-Note that you can see here the full power of Ooor/Ooorest which is multi-OpenERP instances out of the box.
+Note that you can see here the full power of Ooor/Ooorest which is multi-Odoo instances out of the box.
 
-Yes this is putting somewhere the password of the OpenERP users in the Rails app in clear. I advise you never do that with an admin user and you be careful about exploits that would consist in trying to read these passwords. A typical use case however is the concept of 'light user': several web portal users will map to the same OpenERP user.
-TODO In this case Ooorest will forward to OpenERP the email of the current portal user in the OpenERP context so you could log it or eventually apply specific access rule. TODO
-In the future, this would be welcome to ensure Ooor could authenticate to the same OAuth2 provider as OpenERP instead to avoid such a thing. Contributions are welcome.
+In this other example, we inject the email of the Devise authenticated user into the context of Odoo requests so that some custom Odoo access rule method could filter the ERP resources to be accessed according to the Devise user of the web application despite these users may map to a single ERP portal user:
+https://github.com/akretion/ooorest-app/blob/master/config/application.rb#L13
+
+Yes this is putting somewhere the password of the Odoo users in the Rails app in clear. I advise you never do that with an admin user and you be careful about exploits that would consist in trying to read these passwords. A typical use case however is the concept of 'light user': several web portal users will map to the same Odoo user.
+TODO In this case Ooorest will forward to Odoo the email of the current portal user in the Odoo context so you could log it or eventually apply specific access rule. TODO
+In the future, this would be welcome to ensure Ooor could authenticate to the same OAuth2 provider as Odoo instead to avoid such a thing. Contributions are welcome.
 
