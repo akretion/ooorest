@@ -13,6 +13,9 @@ module Ooorest
         c.merge(ctx) if ctx.is_a?(Hash)
         c[:active_id] = c[:id]
         %w[model_name id _method controller action format _ utf8 authenticity_token commit].each {|k| c.delete(k)}
+        c.tap {|c| c.keys.each do |key|
+          c[key] = c[key].to_i if c[key] == c[key].to_i.to_s
+        end}
       end
     end
 
