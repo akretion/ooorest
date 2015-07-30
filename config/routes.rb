@@ -16,9 +16,10 @@ Ooorest::Engine.routes.draw do
     root_actions.each { |action| match action[0], :to => action[1], :as => action[2], :via => action[3] }
     scope ":model_name" do
       collection_actions.each { |action| match action[0], :to => action[1], :as => action[2], :via => action[3] }
-      post  "/bulk_action", :to => :bulk_action, :as => "bulk_action"
+      post "/model_action", :to => :model_action, :as => "model_action"
       scope ":id" do
         member_actions.each { |action| match action[0], :to => action[1], :as => action[2], :via => action[3] }
+        post  "/bulk_action", :to => :bulk_action, :as => "bulk_action"
       end
     end
   end

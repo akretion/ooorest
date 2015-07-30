@@ -46,7 +46,7 @@ module Ooorest
     # GET /res-partners/1/edit
     def edit(*args)
       respond_to do |format|
-        format.html # edit.html.erb        
+        format.html # edit.html.erb
       end
     end
 
@@ -106,19 +106,23 @@ module Ooorest
       end
     end
 
-    def call(*args)
+    def bulk_action(*args)
       method = params.delete(:method)
       arguments = extract_positional_args(params.delete(:args))
-      ids = ids_from_param(params.delete(:id))
-      ooor_context.keys.each do |key|
-        ooor_context[key] = ooor_context[key].to_i if ooor_context[key] == ooor_context[key].to_i.to_s
+      ids = params.delete(:id) # TODO deal with array
+      ids = [ids.to_i] unless ids.is_a? Array
+      res = @abstract_model.rpc_execute(method, ids, *arguments + [ooor_context])
+      respond_to do |format|
+        format.html { render :xml => res, :layout => false }# show.html.erb
+        format.xml  { render :xml => res, :layout => false }
+        format.json  { render :json => res, :layout => false }
       end
-      if ids
-        ids = [ids.to_i] unless ids.is_a? Array
-        res = @abstract_model.rpc_execute(method, ids, *arguments + [ooor_context])#, context)
-      else
-        res = @abstract_model.rpc_execute(method, *arguments + [ooor_context]) #TODO
-      end
+    end
+
+    def model_action(*args)
+      method = params.delete(:method)
+      arguments = extract_positional_args(params.delete(:args))
+      res = @abstract_model.rpc_execute(method, *arguments + [ooor_context]) #TODO
       respond_to do |format|
         format.html { render :xml => res, :layout => false }# show.html.erb
         format.xml  { render :xml => res, :layout => false }
