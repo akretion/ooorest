@@ -205,10 +205,10 @@ module Ooorest
 
     def extract_positional_args(args)
       if args.is_a?(String)
-        unless json_args.strip[0] == '['
-          json_args = "[#{json_args}]"
+        unless args.strip[0] == '['
+          args = "[#{args}]"
         end
-        JSON.parse(json_args)
+        JSON.parse(args)
       else
         args
       end
