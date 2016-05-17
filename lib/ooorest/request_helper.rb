@@ -24,7 +24,7 @@ module Ooorest
     end
 
     def ooor_public_session
-      Ooor.default_session
+      env['ooor']['ooor_public_session']
     end
 
     def ooor_default_model(model_path=params[:model_name])
