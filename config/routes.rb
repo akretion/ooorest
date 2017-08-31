@@ -13,13 +13,13 @@ Ooorest::Engine.routes.draw do
                       ["/", :destroy, :destroy, [:delete]],
                       ["/show_in_app", :show_in_app, :show_in_app, [:get]]]
 
-    root_actions.each { |action| match action[0], :to => action[1], :as => action[2], :via => action[3] }
+    root_actions.each { |action| match action[0], :action => action[1], :as => action[2], :via => action[3] }
     scope ":model_name" do
-      collection_actions.each { |action| match action[0], :to => action[1], :as => action[2], :via => action[3] }
-      post "/model_action", :to => :model_action, :as => "model_action"
+      collection_actions.each { |action| match action[0], :action => action[1], :as => action[2], :via => action[3] }
+      post "/model_action", :action => :model_action, :as => "model_action"
       scope ":id" do
-        member_actions.each { |action| match action[0], :to => action[1], :as => action[2], :via => action[3] }
-        post  "/bulk_action", :to => :bulk_action, :as => "bulk_action"
+        member_actions.each { |action| match action[0], :action => action[1], :as => action[2], :via => action[3] }
+        post  "/bulk_action", :action => :bulk_action, :as => "bulk_action"
       end
     end
   end

@@ -20,11 +20,11 @@ module Ooorest
     end
 
     def ooor_session
-      env['ooor']['ooor_session']
+      request.env['ooor']['ooor_session']
     end
 
     def ooor_public_session
-      env['ooor']['ooor_public_session']
+      request.env['ooor']['ooor_public_session']
     end
 
     def ooor_default_model(model_path=params[:model_name])
